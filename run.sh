@@ -274,6 +274,11 @@ function enable_venv() {
 
 msi_url=$1
 DEVSTACK_BRANCH=${2:-"stable/icehouse"}
+DEVSTACK_TAG=$2
+tags=(stable/kilo stable/liberty)
+if [[ ${tags[*]} =~ $DEVSTACK_TAG ]]; then
+    DEVSTACK_TAG="`cut -d "/" -f 2 <<< $DEVSTACK_TAG`-eol"
+fi
 test_suite_override=${3}
 test_names_subset=${@:4}
 
@@ -464,6 +469,7 @@ do
     sed -i "s/<%DEVSTACK_LIVE_MIGRATION%>/$DEVSTACK_LIVE_MIGRATION/g" $temp_setup_dir/local.conf
     sed -i "s/<%DEVSTACK_PASSWORD%>/$DEVSTACK_PASSWORD/g" $temp_setup_dir/local.conf
     sed -i "s#<%DEVSTACK_BRANCH%>#$DEVSTACK_BRANCH#g" $temp_setup_dir/local.conf
+    sed -i "s#<%DEVSTACK_TAG%>#$DEVSTACK_TAG#g" $temp_setup_dir/local.conf
     sed -i "s#<%DEVSTACK_LOGS_DIR%>#$container_screen_logs#g" $temp_setup_dir/local.conf
 
 
